@@ -1,58 +1,58 @@
-// src/components/OnboardingStep2.tsx
 import React from "react";
-import { Checkbox } from "../ui/Checkbox";
+import { ProgressBar } from "../ui/ProgressBar";
 
 interface Props {
-  usage: string[];
-  onToggle: (val: string) => void;
+  usage: string;
+  onSelect: (val: string) => void;
+  currentStep: number;
+  onNext: () => void; // Function to go to the next step
 }
 
 const options = ["Buying and selling", "Buying", "Selling"];
 
-export const OnboardingStep2: React.FC<Props> = ({ usage, onToggle }) => {
+export const OnboardingStep2: React.FC<Props> = ({ usage, onSelect, currentStep, onNext }) => {
+  const steps = ["Team Name", "Primary Usage", "Team Members"];
+
   return (
-    <div className="max-w-2xl mx-auto p-6 font-sans">
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-gray-50">
       {/* Progress Bar */}
-      <div className="flex justify-between gap-4 mb-12">
-        {["1", "2", "3"].map((step, i) => (
-          <div key={step} className="flex flex-col items-center flex-1">
-            <div
-              className={`w-10 h-10 rounded-full ${
-                step === "2" ? "bg-blue-600 text-white" : "bg-white"
-              } border-2 border-gray-300 flex items-center justify-center font-bold mb-2`}
-            >
-              {step}
-            </div>
-            <p className="text-gray-500 text-sm text-center">
-              {["Team Name", "Primary Usage", "Team Members"][i]}
-            </p>
-          </div>
-        ))}
-      </div>
+      <ProgressBar currentStep={currentStep} steps={steps} />
 
       {/* Heading */}
-      <h1 className="text-center text-3xl font-bold mb-4">
-        Set Your <strong>Primary Usage</strong>
-      </h1>
-      <p className="text-center text-gray-600 text-lg mb-8">
-        Choose how you’ll primarily use the platform
+      <h1 className="text-3xl font-semibold mb-4 text-gray-900">Set Primary Usage</h1>
+      <p className="text-sm text-gray-600 mb-6">
+        Choose What You'll Use The Platform For Primarily
       </p>
+      <p className="text-sm text-gray-400 mb-8">You Can Change This Anytime In Your Settings</p>
 
-      {/* Checkboxes */}
-      <div className="w-full max-w-md mx-auto mb-6 space-y-4">
+      {/* Radio Options */}
+      <div className="w-full max-w-md mx-auto flex flex-col gap-4 items-center">
         {options.map((opt) => (
-          <div key={opt} className="flex items-center gap-3">
-            <Checkbox
-              label={opt}
-              checked={usage.includes(opt)}
-              onChange={() => onToggle(opt)}
+          <label key={opt} className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="radio"
+              value={opt}
+              checked={usage === opt}
+              onChange={() => onSelect(opt)}
+              className="form-radio text-black border-gray-300 focus:ring-black"
             />
-          </div>
+            <span className="text-lg text-gray-700">{opt}</span>
+          </label>
         ))}
       </div>
 
-      <button className="w-full max-w-md mx-auto block bg-blue-600 hover:bg-blue-700 text-white py-3 text-base rounded-md">
-        Continue
+      {/* Button */}
+      <button
+        className="mt-6 bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-md"
+        onClick={() => {
+          if (!usage) {
+            alert("Please select a primary usage.");
+            return;
+          }
+          onNext(); // Navigate to the next step
+        }}
+      >
+        Add Your Team
       </button>
     </div>
   );

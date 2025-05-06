@@ -1,5 +1,5 @@
-// src/components/OnboardingStep3.tsx
 import React from "react";
+import { ProgressBar } from "../ui/ProgressBar";
 
 interface Member {
   email: string;
@@ -9,11 +9,15 @@ interface Member {
 interface Props {
   teamMembers: Member[];
   onChange: (val: Member[]) => void;
+  currentStep: number;
+  onSubmit: () => void;
 }
 
 const roles = ["Sales", "Marketing", "Developer"];
 
-export const OnboardingStep3: React.FC<Props> = ({ teamMembers, onChange }) => {
+export const OnboardingStep3: React.FC<Props> = ({ teamMembers, onChange, currentStep, onSubmit }) => {
+  const steps = ["Team Name", "Primary Usage", "Team Members"];
+
   const handleAddMember = () => {
     onChange([...teamMembers, { email: "", role: "Sales" }]);
   };
@@ -25,33 +29,18 @@ export const OnboardingStep3: React.FC<Props> = ({ teamMembers, onChange }) => {
   };
 
   return (
-    <div className="flex flex-col items-center px-5 py-12 min-h-screen font-inter bg-white">
-      {/* Progress */}
-      <div className="flex gap-10 mb-10">
-        {["✓", "✓", "3"].map((step, i) => (
-          <div key={i} className="flex flex-col items-center text-sm text-gray-900">
-            <div
-              className={`w-9 h-9 rounded-full ${
-                step === "✓" ? "bg-gray-900 text-white" : "border-2 border-black"
-              } flex items-center justify-center font-semibold mb-2`}
-            >
-              {step}
-            </div>
-            <p>{["Team Name", "Primary Usage", "Team Members"][i]}</p>
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-gray-50">
+      {/* Progress Bar */}
+      <ProgressBar currentStep={currentStep} steps={steps} />
 
       {/* Heading */}
-      <h1 className="text-2xl font-semibold mb-2 text-gray-900">
-        Add <strong>Team Members</strong>
-      </h1>
+      <h1 className="text-3xl font-semibold mb-4 text-gray-900">Add Team Members</h1>
       <p className="text-sm text-gray-600 mb-8">
         Add Your Team Members And Set Their Roles.
       </p>
 
-      {/* Inputs */}
-      <div className="flex flex-col gap-4 w-full max-w-2xl mb-6">
+      {/* Member Inputs */}
+      <div className="w-full max-w-md flex flex-col gap-4">
         {teamMembers.map((member, index) => (
           <div key={index} className="flex gap-4">
             <input
@@ -59,12 +48,12 @@ export const OnboardingStep3: React.FC<Props> = ({ teamMembers, onChange }) => {
               placeholder="Email"
               value={member.email}
               onChange={(e) => handleChange(index, "email", e.target.value)}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-md"
+              className="flex-1 px-4 py-2 border rounded-md"
             />
             <select
               value={member.role}
               onChange={(e) => handleChange(index, "role", e.target.value)}
-              className="w-40 px-3 py-2 border border-gray-300 rounded-md"
+              className="w-40 px-3 py-2 border rounded-md"
             >
               {roles.map((role) => (
                 <option key={role} value={role}>
@@ -76,22 +65,30 @@ export const OnboardingStep3: React.FC<Props> = ({ teamMembers, onChange }) => {
         ))}
       </div>
 
-      <button
-        onClick={handleAddMember}
-        className="text-blue-600 hover:underline mb-6"
-      >
-        + Add Another Member
-      </button>
+      {/* Add Another Member - Aligned to Right */}
+      <div className="w-full max-w-md flex justify-end">
+        <button
+          onClick={handleAddMember}
+          className="mt-4 text-black border border-black rounded-md px-4 py-2 hover:bg-gray-100"
+        >
+          Add Another Member
+        </button>
+      </div>
 
-      <p className="text-xs text-gray-400 mb-6">
-        You can edit members and roles anytime in your settings
+      {/* Info Text */}
+      <p className="text-sm text-gray-600 mb-2 mt-8">
+        You can edit members and their roles later in your settings.
       </p>
 
-      <div className="flex gap-4">
-        <button className="px-6 py-2 border border-gray-400 text-gray-700 rounded-md">
+      {/* Action Buttons (Stacked) */}
+      <div className="mt-8 flex flex-col gap-4 items-center">
+        <button className="px-6 py-3 border border-gray-400 rounded-md text-gray-700 w-full max-w-sm">
           Skip For Now
         </button>
-        <button className="px-6 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800">
+        <button
+          className="px-6 py-3 bg-black text-white rounded-md hover:bg-gray-800 w-full max-w-sm"
+          onClick={onSubmit}
+        >
           Add Your Team
         </button>
       </div>

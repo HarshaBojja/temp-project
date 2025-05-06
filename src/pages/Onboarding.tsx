@@ -1,9 +1,8 @@
-// src/pages/Onboarding.tsx
 import React, { useState } from "react";
 import { OnboardingStep1 } from "../components/onboarding/OnboardingStep1";
 import { OnboardingStep2 } from "../components/onboarding/OnboardingStep2";
 import { OnboardingStep3 } from "../components/onboarding/OnboardingStep3";
-import { Button } from "../components/ui/Button";
+import { ProgressBar } from "../components/ui/ProgressBar";
 
 interface TeamMember {
   email: string;
@@ -11,52 +10,55 @@ interface TeamMember {
 }
 
 export const Onboarding: React.FC = () => {
-  const [step, setStep] = useState(1);
-  const [teamName, setTeamName] = useState("");
-  const [usage, setUsage] = useState<string[]>([]);
+  const [step, setStep] = useState(1); // Track the current step
+  const [teamName, setTeamName] = useState(""); // Team name for step 1
+  const [usage, setUsage] = useState<string>(""); // Primary usage for step 2
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     { email: "", role: "Sales" },
-  ]);
+  ]); // Team members for step 3
 
-  const nextStep = () => setStep((s) => Math.min(s + 1, 3));
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
-
-  const toggleUsage = (val: string) => {
-    setUsage((prev) =>
-      prev.includes(val) ? prev.filter((v) => v !== val) : [...prev, val]
-    );
-  };
-
+  // Submit the onboarding data
   const handleSubmit = () => {
     console.log({
       teamName,
       usage,
       teamMembers,
     });
-    // Add actual submission logic here
+    alert("Onboarding Complete!"); // Replace with actual submission logic
+  };
+
+  // Handle navigation logic
+  const goToNextStep = () => {
+    setStep((prevStep) => prevStep + 1);
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 border rounded shadow-sm space-y-6 bg-white">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      {/* Render the onboarding steps conditionally */}
       {step === 1 && (
-        <OnboardingStep1 teamName={teamName} onChange={setTeamName} />
+        <OnboardingStep1
+          teamName={teamName}
+          onChange={setTeamName}
+          currentStep={step}
+          onNext={goToNextStep} // Pass function to navigate to the next step
+        />
       )}
-      {step === 2 && <OnboardingStep2 usage={usage} onToggle={toggleUsage} />}
+      {step === 2 && (
+        <OnboardingStep2
+          usage={usage}
+          onSelect={setUsage}
+          currentStep={step}
+          onNext={goToNextStep} // Pass function to navigate to the next step
+        />
+      )}
       {step === 3 && (
         <OnboardingStep3
           teamMembers={teamMembers}
           onChange={setTeamMembers}
+          currentStep={step}
+          onSubmit={handleSubmit} // Pass function to submit the data
         />
       )}
-
-      <div className="flex justify-between pt-4">
-        {step > 1 && <Button onClick={prevStep}>Back</Button>}
-        {step < 3 ? (
-          <Button onClick={nextStep}>Next</Button>
-        ) : (
-          <Button onClick={handleSubmit}>Submit</Button>
-        )}
-      </div>
     </div>
   );
 };

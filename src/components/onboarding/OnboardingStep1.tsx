@@ -1,52 +1,49 @@
-// src/components/OnboardingStep1.tsx
 import React from "react";
 import { Input } from "../ui/Input";
+import { ProgressBar } from "../ui/ProgressBar";
 
 interface Props {
   teamName: string;
   onChange: (val: string) => void;
+  currentStep: number;
+  onNext: () => void; // Function to go to the next step
 }
 
-export const OnboardingStep1: React.FC<Props> = ({ teamName, onChange }) => {
+export const OnboardingStep1: React.FC<Props> = ({ teamName, onChange, currentStep, onNext }) => {
+  const steps = ["Team Name", "Primary Usage", "Team Members"];
+
   return (
-    <div className="flex flex-col items-center px-5 py-12 min-h-screen text-center font-inter bg-white">
-      {/* Progress Steps */}
-      <div className="flex gap-10 mb-10">
-        <div className="flex flex-col items-center text-sm text-gray-900">
-          <div className="w-9 h-9 rounded-full bg-gray-900 text-white flex items-center justify-center font-semibold mb-2">1</div>
-          <p>Team Name</p>
-        </div>
-        <div className="flex flex-col items-center text-sm text-gray-900">
-          <div className="w-9 h-9 rounded-full border-2 border-black flex items-center justify-center font-semibold mb-2">2</div>
-          <p>Primary Usage</p>
-        </div>
-        <div className="flex flex-col items-center text-sm text-gray-900">
-          <div className="w-9 h-9 rounded-full border-2 border-black flex items-center justify-center font-semibold mb-2">3</div>
-          <p>Team Members</p>
-        </div>
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen py-12 bg-gray-50">
+      {/* Progress Bar */}
+      <ProgressBar currentStep={currentStep} steps={steps} />
 
-      <h1 className="text-2xl font-semibold mb-2 text-gray-900">
-        Set <strong>Team Name</strong>
-      </h1>
-      <p className="text-sm text-gray-600">This name will be visible to your teammates</p>
-      <p className="text-xs text-gray-400 mb-8">You can change this later in your team settings</p>
+      {/* Heading */}
+      <h1 className="text-3xl font-semibold mb-4 text-gray-900">Set Your Team Name</h1>
+      <p className="text-sm text-gray-600 mb-6">Set A Team Name For Your Company</p>
 
-      <div className="w-full max-w-md text-left mb-8">
-        <label htmlFor="teamName" className="block text-sm font-medium text-gray-700 mb-2">
-          Team Name
-        </label>
+      {/* Input */}
+      <div className="w-full max-w-md">
         <Input
           id="teamName"
           label=""
           value={teamName}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Enter your team name"
+          placeholder="Team Name"
         />
       </div>
 
-      <button className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2 text-sm rounded">
-        Continue
+      {/* Button */}
+      <button
+        className="mt-6 bg-black hover:bg-gray-800 text-white px-6 py-3 rounded-md"
+        onClick={() => {
+          if (!teamName.trim()) {
+            alert("Please enter a team name.");
+            return;
+          }
+          onNext(); // Navigate to the next step
+        }}
+      >
+        Set Primary Usage
       </button>
     </div>
   );
